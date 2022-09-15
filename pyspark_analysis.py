@@ -15,6 +15,7 @@ from IPython.display import display
 from flatten_json import unflatten_list
 from flatten_json import flatten
 import pandas as pd
+import pprint
 
 
 spark = SparkSession.builder.master("local[2]").config("spark.jars", "E:\Azure Data Engineer\MYSQL_CONNECTOR_8_0_23\mysql-connector-java-8.0.23.jar").config("spark.ui.port","4050").appName("Reading the csv file and reading Mysql Tables ").getOrCreate()
@@ -86,10 +87,49 @@ acschema = StructType([
 
 df = pd.DataFrame(flatten_data,index=[0])
 final_df = spark.createDataFrame(df,schema=acschema)
-final_df.show()
-print(final_df.printSchema())
+#final_df.show()
+#print(final_df.printSchema())
 
 
-display(final_df)
 
 ## this will show the output 
+print("####################")
+store_data = {
+	"id": "0001",
+	"type": "donut",
+	"name": "Cake",
+	"ppu": 0.55,
+	"batters":
+		{
+			"batter":
+				[
+					{ "id": "1001", "type": "Regular" },
+					{ "id": "1002", "type": "Chocolate" },
+					{ "id": "1003", "type": "Blueberry" },
+					{ "id": "1004", "type": "Devil's Food" }
+				]
+		},
+	"topping":
+		[
+			{ "id": "5001", "type": "None" },
+			{ "id": "5002", "type": "Glazed" },
+			{ "id": "5005", "type": "Sugar" },
+			{ "id": "5007", "type": "Powdered Sugar" },
+			{ "id": "5006", "type": "Chocolate with Sprinkles" },
+			{ "id": "5003", "type": "Chocolate" },
+			{ "id": "5004", "type": "Maple" }
+		]
+}
+
+
+flatten_store_data = flatten(store_data)
+#print(flatten_store_data)
+
+sensor_df = pd.DataFrame(flatten_store_data,index=[0])
+#sensor_df.head()
+sensor_data_final = spark.createDataFrame(sensor_df)
+sensor_data_final.show()
+print(sensor_data_final.columns)
+
+print('the  schema of the final data frame created -->>> ')
+sensor_data_final.printSchema()
