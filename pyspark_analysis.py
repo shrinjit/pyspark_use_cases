@@ -88,3 +88,8 @@ df = pd.DataFrame(flatten_data,index=[0])
 final_df = spark.createDataFrame(df,schema=acschema)
 final_df.show()
 print(final_df.printSchema())
+
+
+display(final_df)
+
+## this will show the output 
